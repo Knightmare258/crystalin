@@ -1,0 +1,63 @@
+<canvas id="gameCanvas" width="1920" height="1080" style="background:black;display:none"></canvas>
+Passwort<input type="password" id="passwort"></input>
+<button id="send">Send</button>
+<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="./client/js/movement.js"></script>
+<script src="./client/js/classes.js"></script>
+<link rel="stylesheet" href="./client/stylesheet/game.css">
+<script>
+    $(document).ready(function(){
+        $("#send").click(function(){
+            if($("#passwort").val() == "SCHOKOTORTE123"){
+               
+                $("#gameCanvas").css({display:"block"});
+                $("#send").remove();
+                $("#password").remove();
+            }
+        });
+    });
+    
+    var socket = io();
+    var documentWidth = $(document).width();
+    var documentHeight = $(document).height();
+    var height = $("#gameCanvas").height();
+    var width = $("#gameCanvas").width();
+    var ctx = document.getElementById("gameCanvas").getContext("2d");
+    var front = new Image();
+    var left = new Image();
+    var right = new Image();
+    var back = new Image();
+    front.src = './client/img/char/char_front.png';
+    left.src ='./client/img/char/char_left.png';
+    right.src ='./client/img/char/char_right.png';
+    back.src ='./client/img/char/char_back.png';
+    var map = new Image();
+    map.src="./client/img/texture/maps_1.png";
+    ctx.webkitImageSmoothingEnabled = ctx.imageSmoothingEnabled = ctx.mozImageSmoothingEnabled = ctx.oImageSmoothingEnabled = false;
+    var id;
+    socket.on('ownId', function(data){
+        id = data.id;
+        console.log(id);
+    });
+    socket.on('newPositions',function(data){
+        var drawingQueue = new Map();
+        ctx.clearRect(0,0,documentWidth,documentHeight);
+        ctx.fillStyle="#FF0000";
+        
+        for(var i = 0 ; i < data.length; i++){
+            if(data[i].id == id){
+                drawingQueue.set(-100 + Math.random(), new DisplayObject(0,0,2500,2500, 4,0,0,500,500));
+            }
+            drawingQueue.set(data[i].y + Math.random(), new DisplayObject(data[i].x,data[i].y,80,120,data[i].direction,Math.floor(data[i].frame % 2) * 16,Math.floor(data[i].frame / 2) * 24,24,16));
+           
+        }
+        var slots = Array.from(drawingQueue.keys());
+        slots.sort(function(a, b){return a - b});
+        for(var i = 0; i < slots.length; i++){
+            var temp = drawingQueue.get(slots[i]);
+            ctx.drawImage(temp.img,temp.offsetX,temp.offsetY,temp.spriteWidth,temp.spriteHeight,temp.x,temp.y,temp.height,temp.width);
+        } 
+    });
+  
+</script>

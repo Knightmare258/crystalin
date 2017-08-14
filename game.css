@@ -1,0 +1,32 @@
+* {
+	margin: 0;
+	padding: 0;
+	overflow:hidden;
+}
+body, html { height:100%; }
+#canvas{
+	z-index:2;
+	position:absolute;
+	width:100vw;
+	height:100vh;
+	image-rendering: optimizeSpeed;             /* Older versions of FF          */
+	image-rendering: -moz-crisp-edges;          /* FF 6.0+                       */
+	image-rendering: -webkit-optimize-contrast; /* Safari                        */
+	image-rendering: -o-crisp-edges;            /* OS X & Windows Opera (12.02+) */
+	image-rendering: pixelated;                 /* Awesome future-browsers       */
+	-ms-interpolation-mode: nearest-neighbor;   /* IE                            */
+	/*background-color:black;*/
+	
+}
+#zoomDetector{
+	z-index:99999999999999;
+	position:absolute;
+	background-color:black;
+	height:100%;
+	width:100%;
+	line-height:100vh;
+	text-align:center;
+	color:red;
+	font-size:10vh;
+	display:none;
+}
